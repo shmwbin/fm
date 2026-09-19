@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111f">
+<!-- PWA Meta Tags -->
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
 <meta name="description" content="Bangla Live FM o Radio — Akashvani, Vividh Bharati, West Bengal, Tripura and Bangladesh radio streams.">
 <title>Bangla Live FM & Radio</title>
 <style>
@@ -21,6 +24,57 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
 .play-icon,.pause-icon,.spin-icon{grid-area:1/1}.pause-icon,.spin-icon{display:none}.loading .play-icon,.loading .pause-icon{display:none}.loading .spin-icon{display:block;animation:spin .8s linear infinite}.playing .play-icon{display:none}.playing .pause-icon{display:block}@keyframes spin{to{transform:rotate(360deg)}}
 .status-wrap{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}.status-text{font-size:.75rem;color:#d7e2ee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.official-link{font-size:.68rem;color:var(--accent);text-decoration:none;width:max-content}
 .volume{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.8rem;flex:none}.vol-slider{width:64px;accent-color:var(--accent)}footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);color:#627791;text-align:center;font-size:.72rem}
+
+/* ======== Floating Install Banner CSS ======== */
+.install-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--panel2);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 12px 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    z-index: 9999;
+    display: none; /* Controlled by JS */
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    width: max-content;
+    max-width: 90vw;
+}
+@keyframes slideUp {
+    from { bottom: -80px; opacity: 0; }
+    to { bottom: 20px; opacity: 1; }
+}
+.install-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.install-text {
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+.install-btn {
+    background: var(--accent);
+    color: #062033;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.close-install {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
 @media(max-width:700px){.container{grid-template-columns:1fr}.page{padding:12px 10px 26px}.radio-card{padding:13px}.volume{display:none}.player-row{margin-top:12px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.spin-icon{animation:none!important}}
 </style>
@@ -41,9 +95,8 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
 <div class="live-badge">LIVE</div>
 <div class="station-head"><div class="station-icon">🎵</div><div class="station-info"><h2>Vividh Bharati</h2><p>All India Radio</p></div></div>
 <div class="player-row"><button class="play-btn" aria-label="Play Vividh Bharati"><span class="play-icon">▶</span><span class="pause-icon">Ⅱ</span><span class="spin-icon">⟳</span></button><div class="status-wrap"><span class="status-text">বন্ধ আছে</span></div><label class="volume"><span>🔊</span><input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1" aria-label="Volume"></label></div>
-</div>
 </article>
-  <article class="radio-card" data-type="garden" data-id="k0P756nS" data-name="Akashvani Murshidabad">
+<article class="radio-card" data-type="garden" data-id="k0P756nS" data-name="Akashvani Murshidabad">
 <div class="live-badge">LIVE</div>
 <div class="station-head"><div class="station-icon">🎼</div><div class="station-info"><h2>Akashvani Murshidabad</h2><p>Murshidabad, West Bengal</p></div></div>
 <div class="player-row"><button class="play-btn" aria-label="Play Akashvani Murshidabad"><span class="play-icon">▶</span><span class="pause-icon">Ⅱ</span><span class="spin-icon">⟳</span></button><div class="status-wrap"><span class="status-text">বন্ধ আছে</span></div><label class="volume"><span>🔊</span><input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1" aria-label="Volume"></label></div>
@@ -70,6 +123,16 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
 <div class="player-row"><button class="play-btn" aria-label="Play Radio Bhumi 92.8 FM"><span class="play-icon">▶</span><span class="pause-icon">Ⅱ</span><span class="spin-icon">⟳</span></button><div class="status-wrap"><span class="status-text">বন্ধ আছে</span></div><label class="volume"><span>🔊</span><input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1" aria-label="Volume"></label></div>
 </article></section>
 <footer> Bangla Live Radio • Stream loads only after Play is pressed</footer></main>
+
+<!-- ======== Floating Install Banner ======== -->
+<div id="installBanner" class="install-banner">
+    <div class="install-content">
+        <span class="install-text">অ্যাপটি ইন্সটল করুন!</span>
+        <button id="installBtnApp" class="install-btn">Install</button>
+        <button id="closeInstall" class="close-install">✖</button>
+    </div>
+</div>
+
 <script>
 let active={audio:null,card:null,button:null,hls:null};let hlsLoader=null;
 function resetCard(card,statusText){if(!card)return;card.classList.remove('playing');const b=card.querySelector('.play-btn');if(b)b.classList.remove('loading');card.querySelector('.status-text').textContent=statusText||'বন্ধ আছে';}
@@ -77,9 +140,49 @@ function stopActive(){if(active.hls){try{active.hls.destroy()}catch(e){}active.h
 async function loadHls(){if(window.Hls)return window.Hls;if(hlsLoader)return hlsLoader;hlsLoader=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/hls.js@1.5.20/dist/hls.min.js';s.onload=()=>resolve(window.Hls);s.onerror=()=>reject(new Error('HLS loader failed'));document.head.appendChild(s)});return hlsLoader}
 function makeAudio(card){const a=new Audio();a.preload='none';a.volume=Number(card.querySelector('.vol-slider').value);return a}
 async function playDirect(card,url){const audio=makeAudio(card),btn=card.querySelector('.play-btn'),status=card.querySelector('.status-text');active={audio,card,button:btn,hls:null};btn.classList.add('loading');status.textContent='Stream load হচ্ছে...';
-try{if(/\.m3u8($|\?)/i.test(url)){const HlsClass=await loadHls();if(HlsClass&&HlsClass.isSupported()){const hls=new HlsClass({enableWorker:true,lowLatencyMode:false,maxBufferLength:12});active.hls=hls;hls.on(HlsClass.Events.ERROR,(evt,data)=>{if(data.fatal){status.textContent='Stream পাওয়া যাচ্ছে না';btn.classList.remove('loading')}});hls.loadSource(url);hls.attachMedia(audio);await new Promise(resolve=>{audio.addEventListener('canplay',resolve,{once:true});setTimeout(resolve,7000)})}else{audio.src=url}}else audio.src=url;await audio.play();card.classList.add('playing');btn.classList.remove('loading');status.textContent='লাইভ চলছে'}catch(err){console.error(err);status.textContent='Stream চালু করা যায়নি';stopActive()}}
+try{if(/\.m3u8($|\?)/i.test(url)){const HlsClass=await loadHls();if(HlsClass&&HlsClass.isSupported()){const hls=new HlsClass({enableWorker:true,lowLatencyMode:false,maxBufferLength:12});active.hls=hls;hls.on(HlsClass.Events.ERROR,(evt,data)=>{if(data.fatal){status.textContent='Stream পাওয়া যাচ্ছে না';btn.classList.remove('loading')}});hls.loadSource(url);hls.attachMedia(audio);await new Promise(resolve=>{audio.addEventListener('canplay',resolve,{once:true});setTimeout(resolve,7000)})}else{audio.src=url}}else audio.src=url;await audio.play();card.classList.add('playing');btn.classList.remove('loading');status.textContent='লাইভ চলছে'}catch(err){console.error(err);status.textContent='Stream চালু করা যায়নি';stopActive()}}
 
 document.querySelectorAll('.radio-card').forEach(card=>{const type=card.dataset.type,btn=card.querySelector('.play-btn'),status=card.querySelector('.status-text'),vol=card.querySelector('.vol-slider');
-btn.addEventListener('click',async()=>{if(active.card===card){if(active.audio&&!active.audio.paused){active.audio.pause();card.classList.remove('playing');status.textContent='Pause করা আছে'}else if(type==='direct'){await playDirect(card,card.dataset.src)}else if(type==='garden'){await playDirect(card,'https://radio.garden/api/ara/content/listen/'+card.dataset.id+'/channel.mp3')}else{window.open(card.dataset.url,'_blank','noopener');status.textContent='Official Akashvani player খুলে দেওয়া হয়েছে'}return}stopActive();if(type==='direct')await playDirect(card,card.dataset.src);else if(type==='garden')await playDirect(card,'https://radio.garden/api/ara/content/listen/'+card.dataset.id+'/channel.mp3');else{window.open(card.dataset.url,'_blank','noopener');status.textContent='Official Akashvani player খুলে দেওয়া হয়েছে'}});
+btn.addEventListener('click',async()=>{if(active.card===card){if(active.audio&&!active.audio.paused){active.audio.pause();card.classList.remove('playing');status.textContent='Pause করা আছে'}else if(type==='direct'){await playDirect(card,card.dataset.src)}else if(type==='garden'){await playDirect(card,'https://radio.garden/api/ara/content/listen/'+card.dataset.id+'/channel.mp3')}else{window.open(card.dataset.url,'_blank','noopener');status.textContent='Official Akashvani player খুলে দেওয়া হয়েছে'}return}stopActive();if(type==='direct')await playDirect(card,card.dataset.src);else if(type==='garden')await playDirect(card,'https://radio.garden/api/ara/content/listen/'+card.dataset.id+'/channel.mp3');else{window.open(card.dataset.url,'_blank','noopener');status.textContent='Official Akashvani player খুলে দেওয়া হয়েছে'}});
 vol.addEventListener('input',()=>{if(active.card===card&&active.audio)active.audio.volume=Number(vol.value)})});
+
+// ======== PWA Install Banner Logic ========
+let deferredPrompt;
+const installBanner = document.getElementById('installBanner');
+const installBtnApp = document.getElementById('installBtnApp');
+const closeInstall = document.getElementById('closeInstall');
+
+// Service Worker Registration for PWA support
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch((err) => console.log('SW Reg Failed', err));
+    });
+}
+
+// Listen for install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent default mini-infobar
+    e.preventDefault();
+    deferredPrompt = e;
+    // Show our floating install banner
+    installBanner.style.display = 'block';
+});
+
+// User clicks Install
+installBtnApp.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        installBanner.style.display = 'none';
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            console.log('App Installed Successfully!');
+        }
+        deferredPrompt = null;
+    }
+});
+
+// Close button logic
+closeInstall.addEventListener('click', () => {
+    installBanner.style.display = 'none';
+});
 </script></body></html>
