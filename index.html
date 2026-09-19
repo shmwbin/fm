@@ -261,10 +261,35 @@ const installBanner = document.getElementById('installBanner');
 const installBtnApp = document.getElementById('installBtnApp');
 const closeInstall = document.getElementById('closeInstall');
 
-// Service Worker Registration for PWA support
+// Service Worker Registration with Auto-Update Logic
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch((err) => console.log('SW Reg Failed', err));
+        navigator.serviceWorker.register('sw.js').then((registration) => {
+            console.log('SW Registered');
+            
+            // Check for updates
+            registration.onupdatefound = () => {
+                const installingWorker = registration.installing;
+                installingWorker.onstatechange = () => {
+                    if (installingWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            // New update found! Auto-reload the page to apply changes.
+                            console.log('New update available. Reloading...');
+                            window.location.reload(true);
+                        }
+                    }
+                };
+            };
+        }).catch((err) => console.log('SW Reg Failed', err));
+    });
+
+    // Ensure reload only happens once
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+            window.location.reload(true);
+            refreshing = true;
+        }
     });
 }
 
