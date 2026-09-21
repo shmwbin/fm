@@ -7,7 +7,7 @@
 <!-- PWA Meta Tags -->
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<meta name="description" content="Bangla Live FM o Radio — Akashvani, Vividh Bharati, West Bengal,  and Bangladesh radio streams.">
+<meta name="description" content="Bangla Live FM o Radio — Akashvani, Vividh Bharati, West Bengal, and Bangladesh radio streams.">
 <title>Bangla Live FM & Radio</title>
 <style>
 :root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10233a;--line:#1e3550;--text:#f8fafc;--muted:#91a4bb;--accent:#55d6ff;--good:#20e3b2;--danger:#fb7185}
@@ -41,7 +41,7 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
     padding: 12px 18px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.6);
     z-index: 9999;
-    display: none; /* Controlled by JS */
+    display: none;
     animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     width: max-content;
     max-width: 90vw;
@@ -140,17 +140,12 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
 </div>
 </article>
 
-
-  
-
 <!-- 4. Vividh Bharati -->
 <article class="radio-card"
          data-type="direct"
          data-src="https://air.pc.cdn.bitgravity.com/air/live/pbaudio001/playlist.m3u8"
          data-name="Vividh Bharati">
-
     <div class="live-badge">LIVE</div>
-
     <div class="station-head">
         <div class="station-icon">🎵</div>
         <div class="station-info">
@@ -158,33 +153,23 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
             <p>All India Radio</p>
         </div>
     </div>
-
     <div class="player-row">
         <button class="play-btn" aria-label="Play Vividh Bharati">
             <span class="play-icon">▶</span>
             <span class="pause-icon">Ⅱ</span>
             <span class="spin-icon">⟳</span>
         </button>
-
         <div class="status-wrap">
             <span class="status-text">বন্ধ আছে</span>
         </div>
-
         <label class="volume">
             <span>🔊</span>
-            <input type="range"
-                   class="vol-slider"
-                   min="0"
-                   max="1"
-                   step="0.05"
-                   value="1"
-                   aria-label="Volume">
+            <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1" aria-label="Volume">
         </label>
     </div>
 </article>
   
   <!-- 5. Maitree -->
-  
   <article class="radio-card" data-type="direct" data-src="https://airhlspush.pc.cdn.bitgravity.com/httppush/hlspbaudio245/hlspbaudio24564kbps.m3u8" data-name="Akashvani Maitree">
 <div class="live-badge">LIVE</div>
 <div class="station-head"><div class="station-icon">📻</div><div class="station-info"><h2>Akashvani Maitree</h2><p>Kolkata</p></div></div>
@@ -203,9 +188,7 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
 </article>
   
 <!-- bangladesh section -->
-  
 <div class="section-title">🇧🇩 বাংলাদেশ</div>
-  
   
  <!-- 6. dhaka -->
 <article class="radio-card" data-type="garden" data-id="k0P756nS" data-name="Bangladesh Betar Dhaka">
@@ -243,7 +226,7 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
 <div class="section-title" style="margin-top: 30px; border-bottom-color: #ffdd55; color: #ffdd55;">🛠️ পরীক্ষামূলক সম্প্রচার</div>
 
 <!-- 9. Local Voice Link Card -->
-<article class="radio-card" data-type="link" data-url="https://shmwbin.github.io/localvoice/" data-name="Local Voice (Test Mode)">
+<article class="radio-card" data-type="direct" data-src="" data-name="Local Voice (Test Mode)">
     <div class="test-badge">TEST MODE</div>
     <div class="station-head">
         <div class="station-icon" style="background: rgba(255, 221, 85, 0.1);">🎤</div>
@@ -253,10 +236,16 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
         </div>
     </div>
     <div class="player-row" style="background: rgba(255, 221, 85, 0.05);">
-        <button class="play-btn" aria-label="Open Local Voice" style="background: #ffdd55; color: #000;">
+        <button class="play-btn" aria-label="Play Local Voice" style="background: #ffdd55; color: #000;">
             <span class="play-icon">▶</span>
+            <span class="pause-icon">Ⅱ</span>
+            <span class="spin-icon">⟳</span>
         </button>
-        <div class="status-wrap"><span class="status-text" style="color: #ffdd55;">শুনতে ক্লিক করুন</span></div>
+        <div class="status-wrap"><span class="status-text" style="color: #ffdd55;">বন্ধ আছে</span></div>
+        <label class="volume">
+            <span>🔊</span>
+            <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+        </label>
     </div>
 </article>
 
@@ -279,15 +268,14 @@ function stopActive(){if(active.hls){try{active.hls.destroy()}catch(e){}active.h
 async function loadHls(){if(window.Hls)return window.Hls;if(hlsLoader)return hlsLoader;hlsLoader=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/hls.js@1.5.20/dist/hls.min.js';s.onload=()=>resolve(window.Hls);s.onerror=()=>reject(new Error('HLS loader failed'));document.head.appendChild(s)});return hlsLoader}
 function makeAudio(card){const a=new Audio();a.preload='none';a.volume=Number(card.querySelector('.vol-slider')?.value || 1);return a}
 async function playDirect(card,url){const audio=makeAudio(card),btn=card.querySelector('.play-btn'),status=card.querySelector('.status-text');active={audio,card,button:btn,hls:null};btn.classList.add('loading');status.textContent='Stream load হচ্ছে...';
-try{if(/\.m3u8($|\?)/i.test(url)){const HlsClass=await loadHls();if(HlsClass&&HlsClass.isSupported()){const hls=new HlsClass({enableWorker:true,lowLatencyMode:false,maxBufferLength:12});active.hls=hls;hls.on(HlsClass.Events.ERROR,(evt,data)=>{if(data.fatal){status.textContent='Stream পাওয়া যাচ্ছে না';btn.classList.remove('loading')}});hls.loadSource(url);hls.attachMedia(audio);await new Promise(resolve=>{audio.addEventListener('canplay',resolve,{once:true});setTimeout(resolve,7000)})}else{audio.src=url}}else audio.src=url;await audio.play();card.classList.add('playing');btn.classList.remove('loading');status.textContent='লাইভ চলছে'}catch(err){console.error(err);status.textContent='Stream চালু করা যায়নি';stopActive()}}
+try{
+    if(!url){ // Handle empty URL explicitly
+        throw new Error('No stream URL provided');
+    }
+    if(/\.m3u8($|\?)/i.test(url)){const HlsClass=await loadHls();if(HlsClass&&HlsClass.isSupported()){const hls=new HlsClass({enableWorker:true,lowLatencyMode:false,maxBufferLength:12});active.hls=hls;hls.on(HlsClass.Events.ERROR,(evt,data)=>{if(data.fatal){status.textContent='Stream পাওয়া যাচ্ছে না';btn.classList.remove('loading')}});hls.loadSource(url);hls.attachMedia(audio);await new Promise(resolve=>{audio.addEventListener('canplay',resolve,{once:true});setTimeout(resolve,7000)})}else{audio.src=url}}else audio.src=url;await audio.play();card.classList.add('playing');btn.classList.remove('loading');status.textContent='লাইভ চলছে'}catch(err){console.error(err);status.textContent='Stream চালু করা যায়নি';stopActive()}}
 
 document.querySelectorAll('.radio-card').forEach(card=>{const type=card.dataset.type,btn=card.querySelector('.play-btn'),status=card.querySelector('.status-text'),vol=card.querySelector('.vol-slider');
 btn.addEventListener('click',async()=>{
-    if(type==='link'){
-        window.location.href = card.dataset.url; // Opens the Local Voice page in the same tab
-        return;
-    }
-    
     if(active.card===card){
         if(active.audio&&!active.audio.paused){active.audio.pause();card.classList.remove('playing');status.textContent='Pause করা আছে'}
         else if(type==='direct'){await playDirect(card,card.dataset.src)}
