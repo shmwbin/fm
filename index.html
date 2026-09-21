@@ -10,8 +10,8 @@
 <meta name="description" content="Bangla Live FM o Radio — Akashvani, Vividh Bharati, West Bengal, and Bangladesh radio streams.">
 <title>Bangla Live FM & Radio</title>
 
-<!-- PeerJS for Local Voice (Reliable CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<!-- PeerJS for Local Voice -->
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
 <style>
 :root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10233a;--line:#1e3550;--text:#f8fafc;--muted:#91a4bb;--accent:#55d6ff;--good:#20e3b2;--danger:#fb7185}
@@ -154,7 +154,7 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
 <!-- bangladesh section -->
 <div class="section-title">🇧🇩 বাংলাদেশ</div>
   
-   <!-- 6. dhaka -->
+ <!-- 6. dhaka -->
 <article class="radio-card" data-type="garden" data-id="k0P756nS" data-name="Bangladesh Betar Dhaka">
 <div class="live-badge">LIVE</div>
 <div class="station-head"><div class="station-icon">📻</div><div class="station-info"><h2>Bangladesh Betar</h2><p>Dhaka, Bangladesh</p></div></div>
@@ -196,7 +196,7 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
         <div class="station-icon" style="background: rgba(255, 221, 85, 0.1);">🎙️</div>
         <div class="station-info">
             <h2>Local Voice</h2>
-            <p>Experimental Stream, Basirhat</p>
+            <p>Basirhat, West Bengal</p>
         </div>
     </div>
     <div class="player-row" style="background: rgba(255, 221, 85, 0.05);">
@@ -214,9 +214,8 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
 </section>
 <footer> Bangla Live Radio • Stream loads only after Play is pressed</footer></main>
 
-<!-- Hidden Audio Elements for WebRTC (Crucial for background audio) -->
+<!-- Hidden Audio Element for WebRTC -->
 <audio id="localAudioPlayer" autoplay playsinline style="display:none;"></audio>
-<audio id="keepAliveAudio" loop playsinline style="display:none;" src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"></audio>
 
 <!-- ======== Floating Install Banner ======== -->
 <div id="installBanner" class="install-banner">
@@ -236,17 +235,13 @@ function resetCard(card,statusText){if(!card)return;card.classList.remove('playi
 function stopActive(){if(active.hls){try{active.hls.destroy()}catch(e){}active.hls=null}if(active.audio){try{active.audio.pause();active.audio.removeAttribute('src');active.audio.load()}catch(e){}}resetCard(active.card);active={audio:null,card:null,button:null,hls:null}}
 async function loadHls(){if(window.Hls)return window.Hls;if(hlsLoader)return hlsLoader;hlsLoader=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/hls.js@1.5.20/dist/hls.min.js';s.onload=()=>resolve(window.Hls);s.onerror=()=>reject(new Error('HLS loader failed'));document.head.appendChild(s)});return hlsLoader}
 function makeAudio(card){const a=new Audio();a.preload='none';a.volume=Number(card.querySelector('.vol-slider')?.value || 1);return a}
-async function playDirect(card,url){
-    if (window.stopLocalVoiceAudio) window.stopLocalVoiceAudio();
-    
-    const audio=makeAudio(card),btn=card.querySelector('.play-btn'),status=card.querySelector('.status-text');active={audio,card,button:btn,hls:null};btn.classList.add('loading');status.textContent='Stream load হচ্ছে...';
-    try{
-        if(!url) throw new Error('No stream URL provided');
-        if(/\.m3u8($|\?)/i.test(url)){const HlsClass=await loadHls();if(HlsClass&&HlsClass.isSupported()){const hls=new HlsClass({enableWorker:true,lowLatencyMode:false,maxBufferLength:12});active.hls=hls;hls.on(HlsClass.Events.ERROR,(evt,data)=>{if(data.fatal){status.textContent='Stream পাওয়া যাচ্ছে না';btn.classList.remove('loading')}});hls.loadSource(url);hls.attachMedia(audio);await new Promise(resolve=>{audio.addEventListener('canplay',resolve,{once:true});setTimeout(resolve,7000)})}else{audio.src=url}}else audio.src=url;await audio.play();card.classList.add('playing');btn.classList.remove('loading');status.textContent='লাইভ চলছে'}catch(err){console.error(err);status.textContent='Stream চালু করা যায়নি';stopActive()}
-}
+async function playDirect(card,url){const audio=makeAudio(card),btn=card.querySelector('.play-btn'),status=card.querySelector('.status-text');active={audio,card,button:btn,hls:null};btn.classList.add('loading');status.textContent='Stream load হচ্ছে...';
+try{
+    if(!url) throw new Error('No stream URL provided');
+    if(/\.m3u8($|\?)/i.test(url)){const HlsClass=await loadHls();if(HlsClass&&HlsClass.isSupported()){const hls=new HlsClass({enableWorker:true,lowLatencyMode:false,maxBufferLength:12});active.hls=hls;hls.on(HlsClass.Events.ERROR,(evt,data)=>{if(data.fatal){status.textContent='Stream পাওয়া যাচ্ছে না';btn.classList.remove('loading')}});hls.loadSource(url);hls.attachMedia(audio);await new Promise(resolve=>{audio.addEventListener('canplay',resolve,{once:true});setTimeout(resolve,7000)})}else{audio.src=url}}else audio.src=url;await audio.play();card.classList.add('playing');btn.classList.remove('loading');status.textContent='লাইভ চলছে'}catch(err){console.error(err);status.textContent='Stream চালু করা যায়নি';stopActive()}}
 
 document.querySelectorAll('.radio-card').forEach(card=>{
-    if (card.id === 'localVoiceCard') return; 
+    if (card.id === 'localVoiceCard') return; // Skip the Firebase card
 
     const type=card.dataset.type,btn=card.querySelector('.play-btn'),status=card.querySelector('.status-text'),vol=card.querySelector('.vol-slider');
     btn.addEventListener('click',async()=>{
@@ -302,7 +297,7 @@ closeInstall.addEventListener('click', () => { installBanner.style.display = 'no
 </script>
 
 <!-- ============================================== -->
-<!-- Firebase & WebRTC Logic Fully Fixed & Safe     -->
+<!-- Firebase & WebRTC Logic for Local Voice Card   -->
 <!-- ============================================== -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
@@ -323,22 +318,17 @@ closeInstall.addEventListener('click', () => { installBanner.style.display = 'no
 
     let isLiveNow = false;
     let currentBroadcasterId = null;
-    let peer = null;
-    let activeCall = null;
+    let peer;
+    let activeCall;
     let audioCtx; 
-    let connMonitor = null; 
-    let backgroundWatchdog = null;
 
     const liveBadge = document.getElementById('localLiveBadge');
     const statusText = document.getElementById('localStatusText');
     const playBtn = document.getElementById('localPlayBtn');
     const btnIcon = document.getElementById('localBtnIcon');
     const audioPlayer = document.getElementById('localAudioPlayer');
-    const keepAliveAudio = document.getElementById('keepAliveAudio');
     const volSlider = document.getElementById('localVolSlider');
     const card = document.getElementById('localVoiceCard');
-    
-    window.stopLocalVoiceAudio = stopAudio;
 
     onValue(statusRef, (snapshot) => {
         const data = snapshot.val();
@@ -376,173 +366,52 @@ closeInstall.addEventListener('click', () => { installBanner.style.display = 'no
     playBtn.addEventListener('click', async () => {
         if (audioPlayer.srcObject) {
             stopAudio();
-        } else if (isLiveNow) {
-            if (!currentBroadcasterId) {
-                alert("⚠️ ব্রডকাস্টার আইডি পাওয়া যায়নি! অ্যাডমিন প্যানেল থেকে লাইভ রিফ্রেশ করুন।");
-                return;
-            }
-
-            if (typeof stopActive === 'function') stopActive();
-            
-            btnIcon.innerText = "⏳";
-            statusText.innerText = "কানেক্ট হচ্ছে...";
+        } else if (isLiveNow && currentBroadcasterId) {
+            try {
+                audioPlayer.play().catch(e => {});
+            } catch(err) {}
 
             startListening();
         }
     });
 
     function startListening() {
-        if (peer) { peer.destroy(); peer = null; }
-        
+        btnIcon.innerText = "⏳";
         peer = new Peer();
         
         peer.on('open', () => {
             activeCall = peer.call(currentBroadcasterId, getSilence());
-            
             activeCall.on('stream', (remoteStream) => {
                 audioPlayer.srcObject = remoteStream;
                 card.classList.add('playing');
                 
-                // ব্যাকগ্রাউন্ডে ব্রাউজার যেন ঘুমিয়ে না পড়ে তাই কিপ-এলাইভ অডিও প্লে করা হলো
-                keepAliveAudio.play().catch(e => {});
-
-                audioPlayer.play().then(() => {
-                    setupMediaSession();
-                }).catch(error => {
-                    console.log("Auto-play prevented:", error);
-                });
+                const playPromise = audioPlayer.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Auto-play was prevented by mobile browser.");
+                    });
+                }
                 
                 btnIcon.innerText = "Ⅱ";
                 statusText.innerText = "লাইভ শুনছেন...";
-                
-                startBackgroundWatchdog();
             });
-
-            let lastBytesReceived = 0;
-            let silentCount = 0;
-
-            connMonitor = setInterval(async () => {
-                if (activeCall && activeCall.peerConnection) {
-                    const state = activeCall.peerConnection.iceConnectionState;
-                    
-                    if (state === 'disconnected' || state === 'failed' || state === 'closed') {
-                        triggerReconnect();
-                        return;
-                    }
-
-                    try {
-                        const stats = await activeCall.peerConnection.getStats();
-                        let currentBytes = 0;
-                        
-                        stats.forEach(report => {
-                            if (report.type === 'inbound-rtp' && report.kind === 'audio') {
-                                currentBytes = report.bytesReceived;
-                            }
-                        });
-
-                        if (currentBytes > 0) {
-                            if (currentBytes === lastBytesReceived) {
-                                silentCount++;
-                                if (silentCount >= 4) {
-                                    triggerReconnect(); 
-                                }
-                            } else {
-                                silentCount = 0;
-                                lastBytesReceived = currentBytes;
-                            }
-                        }
-                    } catch (e) { }
-                }
-            }, 3000);
-            
-            activeCall.on('close', stopAudio);
-            activeCall.on('error', stopAudio);
         });
-
-        peer.on('disconnected', () => {
-            if (peer && !peer.destroyed) peer.reconnect();
-        });
-
-        peer.on('error', (err) => {
-            triggerReconnect();
-        });
-    }
-
-    function startBackgroundWatchdog() {
-        if (backgroundWatchdog) clearInterval(backgroundWatchdog);
-
-        backgroundWatchdog = setInterval(() => {
-            if (card.classList.contains('playing') && isLiveNow) {
-                if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-                if (audioPlayer.paused && audioPlayer.srcObject) {
-                    audioPlayer.play().catch(e => {});
-                }
-            }
-        }, 4000);
-    }
-
-    function triggerReconnect() {
-        stopAudio();
-        if (isLiveNow) {
-            statusText.innerText = "পুনরায় কানেক্ট হচ্ছে...";
-            setTimeout(() => {
-                startListening();
-            }, 1000); 
-        }
     }
 
     function stopAudio() {
-        if (backgroundWatchdog) { clearInterval(backgroundWatchdog); backgroundWatchdog = null; }
-        if (connMonitor) { clearInterval(connMonitor); connMonitor = null; }
-        
-        // কিপ-এলাইভ অডিও পজ করা হলো
-        keepAliveAudio.pause();
-        
-        if (audioPlayer.srcObject) { audioPlayer.srcObject = null; }
-        if (activeCall) { activeCall.close(); activeCall = null; }
-        if (peer) { peer.destroy(); peer = null; }
-        
+        if (audioPlayer.srcObject) {
+            audioPlayer.srcObject = null;
+        }
+        if (activeCall) {
+            activeCall.close();
+        }
+        if (peer) {
+            peer.destroy();
+        }
         card.classList.remove('playing');
         btnIcon.innerText = "▶";
-        
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.playbackState = 'none';
-        }
-
         if(isLiveNow) {
             statusText.innerText = "সম্প্রচার চলছে! শুনতে প্লে করুন";
-        } else {
-            statusText.innerText = "বন্ধ আছে";
-        }
-    }
-
-    function setupMediaSession() {
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: 'Local Voice (Live)',
-                artist: 'Bangla Live FM',
-                album: 'Experimental Stream, Basirhat',
-                artwork: [
-                    { src: 'https://cdn-icons-png.flaticon.com/512/1256/1256627.png', sizes: '512x512', type: 'image/png' }
-                ]
-            });
-
-            navigator.mediaSession.playbackState = 'playing';
-
-            navigator.mediaSession.setActionHandler('play', () => {
-                audioPlayer.play();
-                navigator.mediaSession.playbackState = 'playing';
-            });
-
-            navigator.mediaSession.setActionHandler('pause', () => {
-                stopAudio(); 
-            });
-
-            navigator.mediaSession.setActionHandler('stop', () => {
-                stopAudio();
-            });
         }
     }
 
