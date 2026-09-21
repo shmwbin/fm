@@ -214,8 +214,9 @@ h1{margin:0;font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.2;letter-spacing:
 </section>
 <footer> Bangla Live Radio • Stream loads only after Play is pressed</footer></main>
 
-<!-- Hidden Audio Element for WebRTC (Crucial for background audio) -->
+<!-- Hidden Audio Elements for WebRTC (Crucial for background audio) -->
 <audio id="localAudioPlayer" autoplay playsinline style="display:none;"></audio>
+<audio id="keepAliveAudio" loop playsinline style="display:none;" src="data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"></audio>
 
 <!-- ======== Floating Install Banner ======== -->
 <div id="installBanner" class="install-banner">
@@ -333,6 +334,7 @@ closeInstall.addEventListener('click', () => { installBanner.style.display = 'no
     const playBtn = document.getElementById('localPlayBtn');
     const btnIcon = document.getElementById('localBtnIcon');
     const audioPlayer = document.getElementById('localAudioPlayer');
+    const keepAliveAudio = document.getElementById('keepAliveAudio');
     const volSlider = document.getElementById('localVolSlider');
     const card = document.getElementById('localVoiceCard');
     
@@ -376,13 +378,12 @@ closeInstall.addEventListener('click', () => { installBanner.style.display = 'no
             stopAudio();
         } else if (isLiveNow) {
             if (!currentBroadcasterId) {
-                alert("⚠️ ব্রডকাস্টার আইডি পাওয়া যায়নি! অ্যাডমিন প্যানেল থেকে লাইভ রিফ্রেশ করুন।");
+                alert("⚠️ ব্রডকাস্টার আইডি পাওয়া যায়নি! অ্যাডমিন প্যানেল থেকে লাইভ রিফ্রেশ করুন।");
                 return;
             }
 
             if (typeof stopActive === 'function') stopActive();
             
-            // তাৎক্ষণিকভাবে লোডিং আইকন দেখাবে
             btnIcon.innerText = "⏳";
             statusText.innerText = "কানেক্ট হচ্ছে...";
 
@@ -402,6 +403,9 @@ closeInstall.addEventListener('click', () => { installBanner.style.display = 'no
                 audioPlayer.srcObject = remoteStream;
                 card.classList.add('playing');
                 
+                // ব্যাকগ্রাউন্ডে ব্রাউজার যেন ঘুমিয়ে না পড়ে তাই কিপ-এলাইভ অডিও প্লে করা হলো
+                keepAliveAudio.play().catch(e => {});
+
                 audioPlayer.play().then(() => {
                     setupMediaSession();
                 }).catch(error => {
@@ -492,6 +496,10 @@ closeInstall.addEventListener('click', () => { installBanner.style.display = 'no
     function stopAudio() {
         if (backgroundWatchdog) { clearInterval(backgroundWatchdog); backgroundWatchdog = null; }
         if (connMonitor) { clearInterval(connMonitor); connMonitor = null; }
+        
+        // কিপ-এলাইভ অডিও পজ করা হলো
+        keepAliveAudio.pause();
+        
         if (audioPlayer.srcObject) { audioPlayer.srcObject = null; }
         if (activeCall) { activeCall.close(); activeCall = null; }
         if (peer) { peer.destroy(); peer = null; }
